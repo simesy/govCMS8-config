@@ -21,6 +21,8 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     protected $io;
 
     /**
+     * Activate function.
+     *
      * @param Composer $composer
      * @param IOInterface $io
      */
@@ -28,14 +30,6 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     {
         $this->composer = $composer;
         $this->io = $io;
-    }
-
-    /**
-     *
-     */
-    public static function getSubscribedEvents()
-    {
-        // TODO: Implement getSubscribedEvents() method.
     }
 
 }
