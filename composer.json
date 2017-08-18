@@ -26,9 +26,9 @@
     ],
     "homepage": "https://www.govcms.gov.au",
     "support": {
-        "issues:": "https://github.com/govCMS/govcms-config/issues",
-        "wik": "https://github.com/govCMS/govcms-config/wiki",
-        "source": "https://github.com/govCMS/govcms-config/releases"
+        "issues:": "https://github.com/govCMS/govCMS8-config/issues",
+        "wik": "https://github.com/govCMS/govCMS8-config/wiki",
+        "source": "https://github.com/govCMS/govCMS8-config/releases"
     },
     "require": {
         "composer-plugin-api": "^1.1",
