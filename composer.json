@@ -1,7 +1,7 @@
 {
-    "name": "govcms/config",
+    "name": "govcms/govcms8-config",
     "description": "Configuration for the govCMS Drupal 8 distribution",
-    "keywords": ["govCMS"],
+    "keywords": ["govCMS", "govCMS8"],
     "type": "composer-plugin",
     "minimum-stability": "dev",
     "prefer-stable": true,
