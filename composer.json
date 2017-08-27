@@ -48,6 +48,9 @@
     "extra": {
         "class": "govCMS\\Config\\Composer\\Plugin"
     },
+    "bin": [
+        "bin/govcms"
+    ],
     "conflict": {
         "drupal/core": "7.*"
     },
