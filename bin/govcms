@@ -1,0 +1,10 @@
+#!/usr/bin/env php
+<?php
+
+/**
+ * @file
+ * govCMS commands wrapper.
+ */
+
+ // Shell wrapper for govCMS robo app.
+ require_once __DIR__ . '/govcms-robo.php';
