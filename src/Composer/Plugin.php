@@ -96,6 +96,8 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     public function onPostCmdEvent(Event $event)
     {
+        $this->executeUpdate();
+
         // Only install the template files if govCMS package was installed.
         if (isset($this->govCMSConfigPackage)) {
             $version = $this->govCMSConfigPackage->getVersion();
@@ -121,11 +123,29 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         return null;
     }
     /**
-     * @param $version
+     * Execute govCMS package update.
+     *
+     * @param string $version
+     *   Version string.
      */
-    protected function executeUpdate($version)
+    protected function executeUpdate($version = NULL)
     {
-        $this->io->write('<comment>Skipping update of templated files</comment>');
+        // Determine if govCMS is being installed.
+        $installed = FALSE;
+
+        if (FALSE === $installed) {
+            $this->io->write('<info>Creating govCMS8 required project files...</info>');
+            $project_new = TRUE;
+            if (TRUE === $project_new) {
+                $success = $this->executeCommand($this->getVendorPath() . '/govcms/govcms8-config/bin/govcms internal:create-project --ansi', [], TRUE);
+            }
+            else {
+                $success = $this->executeCommand($this->getVendorPath() . '/govcms/govcms8-config/bin/govcms internal:existing-project --ansi', [], TRUE);
+            }
+        }
+        else {
+            $this->io->write('<comment>Skipping update of govCMS8 required project files</comment>');
+        }
     }
 
     /**
@@ -165,6 +185,54 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     public function getRepoRoot()
     {
         return dirname($this->getVendorPath());
+    }
+
+    /**
+     * Retrieve "extra" configuration.
+     *
+     * @return array
+     */
+    protected function getOptions() {
+      $defaults = [
+        'update' => TRUE,
+      ];
+      $extra = $this->composer->getPackage()->getExtra() + ['govcms' => []];
+      $extra['govcms'] = $extra['govcms'] + $defaults;
+      return $extra;
+    }
+
+    /**
+     * Executes a shell command with escaping.
+     *
+     * Example usage: $this->executeCommand("test command %s", [ $value ]).
+     *
+     * @param string $cmd
+     * @param array $args
+     * @param bool $display_output
+     *   Optional. Defaults to FALSE. If TRUE, command output will be displayed
+     *   on screen.
+     *
+     * @return bool
+     *   TRUE if command returns successfully with a 0 exit code.
+     */
+    protected function executeCommand($cmd, $args = [], $display_output = FALSE) {
+      // Shell-escape all arguments.
+      foreach ($args as $index => $arg) {
+        $args[$index] = escapeshellarg($arg);
+      }
+      // Add command as first arg.
+      array_unshift($args, $cmd);
+      // And replace the arguments.
+      $command = call_user_func_array('sprintf', $args);
+      $output = '';
+      if ($this->io->isVerbose() || $display_output) {
+        $this->io->write('<comment> > ' . $command . '</comment>');
+        $io = $this->io;
+        $output = function ($type, $buffer) use ($io) {
+          $io->write($buffer, FALSE);
+        };
+      }
+      return ($this->executor->execute($command, $output) == 0);
     }
 
 }
