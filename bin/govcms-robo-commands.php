@@ -8,9 +8,9 @@
  use Robo\Common\TimeKeeper;
  use Symfony\Component\Console\Input\ArgvInput;
  use Symfony\Component\Console\Output\ConsoleOutput;
- use Robo\Config\Config;
+ use govCMS\Config\Robo\Config\ConfigDefault;
  use Consolidation\Config\Loader\YamlConfigLoader;
- use Consolidation\Config\Loader\ConfigProcessor;
+ use govCMS\Config\Robo\Config\ConfigProcessor;
  use govCMS\Config\Robo\Entry;
 
 // Start Timer.
@@ -22,7 +22,7 @@ $input = new ArgvInput($_SERVER['argv']);
 $output = new ConsoleOutput();
 
 // Initialize configurations.
-$config = new Config();
+$config = new ConfigDefault($root_path);
 $loader = new YamlConfigLoader();
 $processor = new ConfigProcessor();
 $processor->extend($loader->load('govcms.build.yml'));
