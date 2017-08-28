@@ -9,6 +9,7 @@ use Psr\Log\LoggerAwareTrait;
 use Robo\Contract\BuilderAwareInterface;
 use Robo\Contract\ConfigAwareInterface;
 use Robo\Contract\IOAwareInterface;
+use Robo\Contract\VerbosityThresholdInterface;
 use Robo\LoadAllTasks;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -19,13 +20,13 @@ use govCMS\Config\Robo\Config\ConfigAwareTrait;
 /**
  * Command base class.
  */
-abstract class CommandBase implements LoggerAwareInterface, BuilderAwareInterface, IOAwareInterface, ContainerAwareInterface
+class CommandBase implements ConfigAwareInterface, LoggerAwareInterface, BuilderAwareInterface, IOAwareInterface, ContainerAwareInterface
 {
 
+    use ConfigAwareTrait;
+    use LoggerAwareTrait;
+    use IO;
     use ContainerAwareTrait;
     use LoadAllTasks;
-    use ConfigAwareTrait;
-    use IO;
-    use LoggerAwareTrait;
-
+    
 }

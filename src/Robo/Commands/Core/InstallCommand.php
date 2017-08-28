@@ -24,7 +24,7 @@ class InstallCommand extends CommandBase
      */
     protected function govCMSBrand()
     {
-        $logo_art = $this->getConfigValue('govcms.root') . '/govCMS8.txt';
+        $logo_art = $this->getConfigValue('govcms.config.root') . '/govCMS8.txt';
         $this->say(file_get_contents($logo_art));
     }
 
