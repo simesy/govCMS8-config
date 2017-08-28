@@ -17,6 +17,8 @@ class InstallCommand extends CommandBase
     public function createProject()
     {
         $this->govCMSBrand();
+
+        $this->yell("Your new govCMS8 project has been created in {$this->getConfigValue('govcms.repo.root')}.");
     }
 
     /**
