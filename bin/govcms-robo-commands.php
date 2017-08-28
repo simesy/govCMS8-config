@@ -25,7 +25,9 @@ $output = new ConsoleOutput();
 $config = new ConfigDefault($root_path);
 $loader = new YamlConfigLoader();
 $processor = new ConfigProcessor();
-$processor->extend($loader->load('govcms.build.yml'));
+$processor->add($config->export());
+$processor->extend($loader->load($config->get('govcms.config.root') . '/config/govcms.build.yml'));
+
 $config->import($processor->export());
 
 $app = new Entry($config, $input, $output);
