@@ -5,12 +5,12 @@ namespace govCMS\Config\Robo\Config;
 class ConfigDefault extends ConfigBase
 {
 
-  public function __construct($repo_root) {
+  public function __construct($root_path) {
     parent::__construct();
-    $this->set('repo.root', $repo_root);
-    $this->set('docroot', $repo_root . '/docroot');
+    $this->set('govcms.repo.root', $root_path);
+    $this->set('docroot', $root_path . '/docroot');
     $this->set('govcms.config.root', $this->getGovCMSConfigRoot());
-    $this->set('composer.bin', $repo_root . '/vendor/bin');
+    $this->set('composer.bin', $root_path . '/vendor/bin');
   }
 
 
@@ -33,7 +33,7 @@ class ConfigDefault extends ConfigBase
         return $possible_path;
       }
     }
-    throw new Exception('Could not find the govCMS config vendor directory');
+    throw new \Exception('Could not find the govCMS config vendor directory');
   }
 
 }
