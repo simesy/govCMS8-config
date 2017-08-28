@@ -28,7 +28,7 @@ $processor = new ConfigProcessor();
 $processor->extend($loader->load('govcms.build.yml'));
 $config->import($processor->export());
 
-$app = new \Entry($config, $input, $output);
+$app = new Entry($config, $input, $output);
 $status_code = $app->run($input, $output);
 
 // Stop timer.

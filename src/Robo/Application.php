@@ -17,6 +17,7 @@ class Application extends ConsoleApplication
   public function runCommand(Command $command, InputInterface $input, OutputInterface $output) {
     return $this->doRunCommand($command, $input, $output);
   }
+  
   /**
    * @{inheritdoc}
    */
