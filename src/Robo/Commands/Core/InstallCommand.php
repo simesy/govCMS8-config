@@ -18,9 +18,11 @@ class InstallCommand extends CommandBase
      */
     public function createProject()
     {
-
+        // Update root files.
         $this->updateRootFiles();
-
+        // Re-install composer.json packages.
+        $this->reInstallComposerPackages();
+        // Display the logo art.
         $this->govCMSBrand();
 
         $this->yell("Your new govCMS8 project has been created in {$this->getConfigValue('govcms.repo.root')}.");
@@ -82,6 +84,34 @@ class InstallCommand extends CommandBase
         $bytes = file_put_contents($project_composer_json, $munged_json);
         if (!$bytes) {
             throw new \Exception("Could not update $project_composer_json.");
+        }
+    }
+
+    /**
+     * Re-install packages.
+     *
+     * @throws \Exception
+     */
+    protected function reInstallComposerPackages()
+    {
+        $this->say("Installing new Composer dependencies provided by govCMS. This make take a while...");
+        $result = $this->taskFilesystemStack()
+          ->remove([
+            $this->getConfigValue('govcms.repo.root').'/composer.lock',
+            $this->getConfigValue('govcms.repo.root').'/vendor',
+          ])
+          ->setVerbosityThreshold(VerbosityThresholdInterface::VERBOSITY_VERBOSE)
+          ->run();
+        if (!$result->wasSuccessful()) {
+            throw new \Exception("Could not remove Composer files.");
+        }
+        $result = $this->taskExecStack()
+          ->dir($this->getConfigValue('govcms.repo.root'))
+          ->exec("composer install --no-interaction --prefer-dist --ansi")
+          ->detectInteractive()
+          ->run();
+        if (!$result->wasSuccessful()) {
+            throw new \Exception("Could not install Composer requirements.");
         }
     }
 
