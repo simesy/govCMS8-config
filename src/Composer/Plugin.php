@@ -72,6 +72,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         return [
             PackageEvents::POST_PACKAGE_INSTALL => "onPostPackageEvent",
             PackageEvents::POST_PACKAGE_UPDATE => "onPostPackageEvent",
+            ScriptEvents::PRE_INSTALL_CMD => 'checkInstallerPaths',
             ScriptEvents::POST_UPDATE_CMD => 'onPostCmdEvent',
         ];
     }
@@ -90,14 +91,23 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     }
 
     /**
+     * Verify install paths are set correctly.
+     */
+    public function checkInstallerPaths(Event $event)
+    {
+        $extra = $this->composer->getPackage()->getExtra();
+        if (empty($extra['installer-paths'])) {
+            $this->io->write('<error>Error: extras.installer-paths is missing from your composer.json file.</error>');
+        }
+    }
+
+    /**
      * Post update after command has been executed, if applicable.
      *
      * @param Event $event
      */
     public function onPostCmdEvent(Event $event)
     {
-        $this->executeUpdate();
-
         // Only install the template files if govCMS package was installed.
         if (isset($this->govCMSConfigPackage)) {
             $version = $this->govCMSConfigPackage->getVersion();
