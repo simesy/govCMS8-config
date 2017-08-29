@@ -24,7 +24,10 @@
         }
     },
     "config": {
-        "bin-dir": "bin/"
+        "bin-dir": "bin/",
+        "platform": {
+            "php": "7"
+        }
     },
     "extra": {
         "composer-exit-on-patch-failure": true,
