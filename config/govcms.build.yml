@@ -1,2 +1,4 @@
 govcms:
-  name: govCMS
+  name:     govCMS
+  update:
+    ignore: ${govcms.config.root}/config/ignore.txt
