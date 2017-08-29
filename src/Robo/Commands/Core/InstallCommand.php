@@ -3,6 +3,7 @@
 namespace govCMS\Config\Robo\Commands\Core;
 
 use govCMS\Config\Robo\CommandBase;
+use govCMS\Config\Robo\Common\ComposerMunge;
 use Robo\Contract\VerbosityThresholdInterface;
 
 class InstallCommand extends CommandBase
