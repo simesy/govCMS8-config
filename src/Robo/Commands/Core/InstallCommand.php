@@ -34,6 +34,7 @@ class InstallCommand extends CommandBase
     {
         $this->updateVersion();
         $this->rsyncTemplate();
+        $this->mungeComposerJson();
     }
 
     /**
@@ -49,7 +50,7 @@ class InstallCommand extends CommandBase
      */
     protected function rsyncTemplate()
     {
-        $source = $this->getConfigValue('govcms.config.root') . '/template';
+        $source = $this->getConfigValue('govcms.config.root').'/template';
         $destination = $this->getConfigValue('govcms.repo.root');
         $exclude_from = $this->getConfigValue('govcms.update.ignore');
 
@@ -62,7 +63,24 @@ class InstallCommand extends CommandBase
           ->run();
 
         if (!$result->wasSuccessful()) {
-          throw new \Exception("Could not install Composer requirements.");
+            throw new \Exception("Could not install Composer requirements.");
+        }
+    }
+
+    /**
+     * Munges govCMS's templated composer.json with project's composer.json.
+     */
+    protected function mungeComposerJson()
+    {
+        // Merge in the extras configuration. This pulls in
+        // wikimedia/composer-merge-plugin and composer/installers settings.
+        $this->say("Merging default configuration into composer.json...");
+        $project_composer_json = $this->getConfigValue('govcms.repo.root').'/composer.json';
+        $template_composer_json = $this->getConfigValue('govcms.config.root').'/template/composer.json';
+        $munged_json = ComposerMunge::munge($project_composer_json, $template_composer_json);
+        $bytes = file_put_contents($project_composer_json, $munged_json);
+        if (!$bytes) {
+            throw new \Exception("Could not update $project_composer_json.");
         }
     }
 
@@ -71,7 +89,7 @@ class InstallCommand extends CommandBase
      */
     protected function govCMSBrand()
     {
-        $logo_art = $this->getConfigValue('govcms.config.root') . '/govCMS8.txt';
+        $logo_art = $this->getConfigValue('govcms.config.root').'/govCMS8.txt';
         $this->say(file_get_contents($logo_art));
     }
 
