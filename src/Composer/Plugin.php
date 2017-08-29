@@ -4,6 +4,7 @@ namespace govCMS\Config\Composer;
 
 use Composer\Composer;
 use Composer\IO\IOInterface;
+use Composer\Package\PackageInterface;
 use Composer\Plugin\PluginInterface;
 use Composer\EventDispatcher\EventSubscriberInterface;
 use Composer\Installer\PackageEvents;
@@ -15,6 +16,11 @@ use Composer\DependencyResolver\Operation\UpdateOperation;
 use Composer\Util\ProcessExecutor;
 use Composer\Util\Filesystem;
 
+/**
+ * Class Plugin.
+ *
+ * @package govCMS\Config\Composer
+ */
 class Plugin implements PluginInterface, EventSubscriberInterface
 {
 
@@ -70,10 +76,10 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            PackageEvents::POST_PACKAGE_INSTALL => "onPostPackageEvent",
-            PackageEvents::POST_PACKAGE_UPDATE => "onPostPackageEvent",
-            ScriptEvents::PRE_INSTALL_CMD => 'checkInstallerPaths',
-            ScriptEvents::POST_UPDATE_CMD => 'onPostCmdEvent',
+          PackageEvents::POST_PACKAGE_INSTALL => "onPostPackageEvent",
+          PackageEvents::POST_PACKAGE_UPDATE => "onPostPackageEvent",
+          ScriptEvents::PRE_INSTALL_CMD => 'checkInstallerPaths',
+          ScriptEvents::POST_UPDATE_CMD => 'onPostCmdEvent',
         ];
     }
 
@@ -130,30 +136,32 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         if (isset($package) && $package instanceof PackageInterface && $package->getName() == $this->govCMSConfigPackageName) {
             return $package;
         }
+
         return null;
     }
+
     /**
      * Execute govCMS package update.
      *
      * @param string $version
      *   Version string.
      */
-    protected function executeUpdate($version = NULL)
+    protected function executeUpdate($version = null)
     {
         // Determine if govCMS is being installed.
-        $installed = FALSE;
+        $installed = false;
 
-        if (FALSE === $installed) {
+        if (false === $installed) {
             $this->io->write('<info>Creating govCMS8 required project files...</info>');
-            $project_new = TRUE;
-            if (TRUE === $project_new) {
-                $success = $this->executeCommand($this->getVendorPath() . '/govcms/govcms8-config/bin/govcms internal:create-project --ansi', [], TRUE);
+            $project_new = true;
+            if (true === $project_new) {
+                $success = $this->executeCommand($this->getVendorPath().'/govcms/govcms8-config/bin/govcms internal:create-project --ansi',
+                  [], true);
+            } else {
+                $success = $this->executeCommand($this->getVendorPath().'/govcms/govcms8-config/bin/govcms internal:existing-project --ansi',
+                  [], true);
             }
-            else {
-                $success = $this->executeCommand($this->getVendorPath() . '/govcms/govcms8-config/bin/govcms internal:existing-project --ansi', [], TRUE);
-            }
-        }
-        else {
+        } else {
             $this->io->write('<comment>Skipping update of govCMS8 required project files</comment>');
         }
     }
@@ -166,7 +174,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     public function scaffoldComposerIncludes(Event $event)
     {
         $files = [
-            'composer.config.json',
+          'composer.config.json',
         ];
     }
 
@@ -202,13 +210,15 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      *
      * @return array
      */
-    protected function getOptions() {
-      $defaults = [
-        'update' => TRUE,
-      ];
-      $extra = $this->composer->getPackage()->getExtra() + ['govcms' => []];
-      $extra['govcms'] = $extra['govcms'] + $defaults;
-      return $extra;
+    protected function getOptions()
+    {
+        $defaults = [
+          'update' => true,
+        ];
+        $extra = $this->composer->getPackage()->getExtra() + ['govcms' => []];
+        $extra['govcms'] = $extra['govcms'] + $defaults;
+
+        return $extra;
     }
 
     /**
@@ -225,24 +235,26 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      * @return bool
      *   TRUE if command returns successfully with a 0 exit code.
      */
-    protected function executeCommand($cmd, $args = [], $display_output = FALSE) {
-      // Shell-escape all arguments.
-      foreach ($args as $index => $arg) {
-        $args[$index] = escapeshellarg($arg);
-      }
-      // Add command as first arg.
-      array_unshift($args, $cmd);
-      // And replace the arguments.
-      $command = call_user_func_array('sprintf', $args);
-      $output = '';
-      if ($this->io->isVerbose() || $display_output) {
-        $this->io->write('<comment> > ' . $command . '</comment>');
-        $io = $this->io;
-        $output = function ($type, $buffer) use ($io) {
-          $io->write($buffer, FALSE);
-        };
-      }
-      return ($this->executor->execute($command, $output) == 0);
+    protected function executeCommand($cmd, $args = [], $display_output = false)
+    {
+        // Shell-escape all arguments.
+        foreach ($args as $index => $arg) {
+            $args[$index] = escapeshellarg($arg);
+        }
+        // Add command as first arg.
+        array_unshift($args, $cmd);
+        // And replace the arguments.
+        $command = call_user_func_array('sprintf', $args);
+        $output = '';
+        if ($this->io->isVerbose() || $display_output) {
+            $this->io->write('<comment> > '.$command.'</comment>');
+            $io = $this->io;
+            $output = function ($type, $buffer) use ($io) {
+                $io->write($buffer, false);
+            };
+        }
+
+        return ($this->executor->execute($command, $output) == 0);
     }
 
 }
