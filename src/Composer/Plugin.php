@@ -148,22 +148,66 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     protected function executeUpdate($version = null)
     {
+        // Get extra options from composer json.
+        $options = $this->getOptions();
+
         // Determine if govCMS is being installed.
-        $installed = false;
+        $installed = $this->isInitialInstall();
 
         if (false === $installed) {
             $this->io->write('<info>Creating govCMS8 required project files...</info>');
-            $project_new = true;
+            $project_new = $this->isNewProject();
             if (true === $project_new) {
-                $success = $this->executeCommand($this->getVendorPath().'/govcms/govcms8-config/bin/govcms internal:create-project --ansi',
-                  [], true);
+                $success = $this->executeCommand($this->getVendorPath().'/govcms/govcms8-config/bin/govcms internal:create-project --ansi', [], true);
             } else {
-                $success = $this->executeCommand($this->getVendorPath().'/govcms/govcms8-config/bin/govcms internal:existing-project --ansi',
-                  [], true);
+                $success = $this->executeCommand($this->getVendorPath().'/govcms/govcms8-config/bin/govcms internal:existing-project --ansi', [], true);
+            }
+        } elseif ($options['govcms']['update']) {
+            $this->io->write('<info>Updating govCMS templated files...</info>');
+            $success = $this->executeCommand('govcms update --ansi -y', [], true);
+            if (!$success) {
+                $this->io->write("<error>govCMS update script failed! Run `govcms update -v` to retry.</error>");
             }
         } else {
             $this->io->write('<comment>Skipping update of govCMS8 required project files</comment>');
         }
+    }
+
+    /**
+     * Determine if govCMS is being installed for the first time on this
+     * project.
+     *
+     * @return bool
+     *   TRUE if this is the initial install of BLT.
+     */
+    protected function isInitialInstall()
+    {
+        if (!file_exists($this->getRepoRoot().'/govCMS8.README.md')
+          && !file_exists($this->getRepoRoot().'/govCMS8.VERSION.md')
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine if this is a project being newly created.
+     *
+     * This would execute in the context of `composer create-project
+     * govcms/govcms8`.
+     *
+     * @return bool
+     *   TRUE if this is a newly create project.
+     */
+    protected function isNewProject()
+    {
+        $composer_json = json_decode(file_get_contents($this->getRepoRoot().'/composer.json'), true);
+        if (!empty($composer_json['name'] && $composer_json['name'] == 'govcms/govcms8')) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
