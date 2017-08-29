@@ -19,7 +19,6 @@
         "govcms/govcms": "8.4.x-dev"
     },
     "require-dev": {
-        "drush/drush": "~9",
         "phing/phing": "^2.16",
         "phpunit/phpunit": "~4.8 <5",
         "squizlabs/php_codesniffer": "^2.8",
