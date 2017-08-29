@@ -20,7 +20,7 @@
     },
     "autoload": {
         "psr-4": {
-            "govCMS\\Config\\": "src/"
+            "govCMS\\Custom\\": "src/"
         }
     },
     "config": {
