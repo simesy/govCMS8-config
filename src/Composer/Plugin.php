@@ -158,9 +158,9 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             $this->io->write('<info>Creating govCMS8 required project files...</info>');
             $project_new = $this->isNewProject();
             if (true === $project_new) {
-                $success = $this->executeCommand($this->getVendorPath().'/govcms/govcms8-config/bin/govcms internal:create-project --ansi', [], true);
+                $this->executeCommand($this->getVendorPath().'/govcms/govcms8-config/bin/govcms internal:create-project --ansi', [], true);
             } else {
-                $success = $this->executeCommand($this->getVendorPath().'/govcms/govcms8-config/bin/govcms internal:existing-project --ansi', [], true);
+                $this->executeCommand($this->getVendorPath().'/govcms/govcms8-config/bin/govcms internal:existing-project --ansi', [], true);
             }
         } elseif ($options['govcms']['update']) {
             $this->io->write('<info>Updating govCMS templated files...</info>');

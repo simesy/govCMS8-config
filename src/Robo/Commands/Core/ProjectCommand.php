@@ -6,7 +6,12 @@ use govCMS\Config\Robo\CommandBase;
 use govCMS\Config\Robo\Common\ComposerMunge;
 use Robo\Contract\VerbosityThresholdInterface;
 
-class InstallCommand extends CommandBase
+/**
+ * Class ProjectCommand.
+ *
+ * @package govCMS\Config\Robo\Commands\Core
+ */
+class ProjectCommand extends CommandBase
 {
 
     /**
@@ -26,6 +31,18 @@ class InstallCommand extends CommandBase
         $this->govCMSBrand();
 
         $this->yell("Your new govCMS8 project has been created in {$this->getConfigValue('govcms.repo.root')}.");
+    }
+
+    /**
+     * govCMS update process.
+     *
+     * @command update
+     */
+    public function update()
+    {
+        $this->rsyncTemplate();
+        // Check console is installed correctly every time.
+        $this->invokeCommand('install:console');
     }
 
     /**
