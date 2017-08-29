@@ -49,9 +49,12 @@ class Entry implements ContainerAwareInterface, LoggerAwareInterface
         $this->setConfig($config);
         $application = new Application('govCMS', static::VERSION);
 
-        // // Create and configure container.
+        // Create and configure container.
         $container = Robo::createDefaultContainer($input, $output, $application, $config);
         $this->setContainer($container);
+
+        // Set default console arguments and options.
+        $this->addDefaultArgumentsAndOptions($application);
 
         // Using Multiple RoboFiles commands and hooks.
         $this->addBuiltInCommandsAndHooks();
@@ -80,16 +83,24 @@ class Entry implements ContainerAwareInterface, LoggerAwareInterface
     }
 
     /**
+     * Add default arguments and options to every conosole command.
+     */
+    private function addDefaultArgumentsAndOptions(Application $app)
+    {
+        $app->getDefinition()->addOption(new InputOption('--yes', '-y', InputOption::VALUE_NONE, 'Answer all confirmations with "yes"'));
+    }
+
+    /**
      * Add the commands and hooks which are shipped with govCMS core.
      */
     private function addBuiltInCommandsAndHooks()
     {
         $commands = $this->getCommands([
-          'path' => __DIR__ . '/Commands',
+          'path' => __DIR__.'/Commands',
           'namespace' => 'govCMS\Config\Robo\Commands',
         ]);
         $hooks = $this->getHooks([
-          'path' => __DIR__ . '/Hooks',
+          'path' => __DIR__.'/Hooks',
           'namespace' => 'govCMS\Config\Robo\Hooks',
         ]);
         $this->commands = array_merge($commands, $hooks);
@@ -132,7 +143,7 @@ class Entry implements ContainerAwareInterface, LoggerAwareInterface
     {
         $discovery = new CommandFileDiscovery();
         $discovery->setSearchPattern('*Hook.php')->setSearchLocations([]);
-        
+
         return $discovery->discover($options['path'], $options['namespace']);
     }
 
