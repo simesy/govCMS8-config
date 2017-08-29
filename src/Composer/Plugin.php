@@ -164,7 +164,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             }
         } elseif ($options['govcms']['update']) {
             $this->io->write('<info>Updating govCMS templated files...</info>');
-            $success = $this->executeCommand($this->getVendorPath().'/govcms/govcms8-config/bin/govcms update --ansi -y', [], true);
+            $success = $this->executeCommand($this->getVendorPath().'/govcms/govcms8-config/bin/govcms update --ansi', [], true);
             if (!$success) {
                 $this->io->write("<error>govCMS update script failed! Run `govcms update -v` to retry.</error>");
             }
