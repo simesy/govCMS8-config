@@ -31,7 +31,7 @@
         "source": "https://github.com/govCMS/govCMS8-config/releases"
     },
     "require": {
-        "composer/composer": "^1.5",
+        "composer/installers": "^1.2",
         "composer-plugin-api": "^1.1",
         "consolidation/robo": "^1.1",
         "consolidation/config": "^1.0",
@@ -39,7 +39,9 @@
         "php": "^5.6.0 || ^7.0",
         "wikimedia/composer-merge-plugin": "^1.4"
     },
-    "require-dev": {},
+    "require-dev": {
+        "composer/composer": "^1.5"
+    },
     "autoload": {
         "psr-4": {
             "govCMS\\Config\\": "src/"
