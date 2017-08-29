@@ -182,9 +182,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     protected function isInitialInstall()
     {
-        if (!file_exists($this->getRepoRoot().'/govCMS8.README.md')
-          && !file_exists($this->getRepoRoot().'/govCMS8.VERSION.md')
-        ) {
+        if (file_exists($this->getRepoRoot().'/govCMS8.README.md') || file_exists($this->getRepoRoot().'/govCMS8.VERSION.md')) {
             return true;
         }
 
